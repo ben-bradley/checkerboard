@@ -1,4 +1,6 @@
-var Checks = require('../pre/checks');
+var Hapi = require('hapi'),
+  Accounts = require('../pre/accounts'),
+  Checks = require('../pre/checks');
 
 exports.register = function (plugin, options, next) {
 
@@ -6,13 +8,16 @@ exports.register = function (plugin, options, next) {
     method: 'GET',
     path: '/checks',
     config: {
-      pre: [
-        {
-          method: Checks.get,
-          assign: 'checks'
-        }
-      ],
-      handler: getChecksHandler
+      pre: [{
+        method: Accounts.read,
+        assign: 'account'
+      }, {
+        method: Checks.readAll,
+        assign: 'checks'
+      }],
+      handler: function (request, reply) {
+        reply(request.pre.checks);
+      }
     }
   });
 
@@ -20,7 +25,58 @@ exports.register = function (plugin, options, next) {
     method: 'POST',
     path: '/checks',
     config: {
-      handler: postChecksHandler
+      pre: [{
+        method: Accounts.read,
+        assign: 'account'
+      }, {
+        method: Checks.create,
+        assign: 'check'
+      }],
+      handler: function (request, reply) {
+        reply(request.pre.check);
+      }
+    }
+  });
+
+  plugin.route({
+    method: 'GET',
+    path: '/checks/{id}',
+    config: {
+      pre: [{
+        method: Checks.read,
+        assign: 'checks'
+      }],
+      handler: function (request, reply) {
+        reply(request.pre.checks);
+      }
+    }
+  });
+
+  plugin.route({
+    method: 'PUT',
+    path: '/checks/{id}',
+    config: {
+      pre: [{
+        method: Checks.update,
+        assign: 'check'
+      }],
+      handler: function (request, reply) {
+        reply(request.pre.check);
+      }
+    }
+  });
+
+  plugin.route({
+    method: 'DELETE',
+    path: '/checks/{id}',
+    config: {
+      pre: [{
+        method: Checks.delete,
+        assign: 'check'
+      }],
+      handler: function (request, reply) {
+        reply(request.pre.check);
+      }
     }
   });
 
@@ -31,14 +87,4 @@ exports.register = function (plugin, options, next) {
 exports.register.attributes = {
   name: 'checks',
   version: '0.0.0'
-}
-
-function getChecksHandler(request, reply) {
-  reply(request.pre.checks);
-}
-
-function postChecksHandler(request, reply) {
-  reply({
-    ok: true
-  });
 }

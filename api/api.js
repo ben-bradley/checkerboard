@@ -33,9 +33,15 @@ api.route({
 
 api.pack.register({
   plugin: require('./endpoint/checks'),
-  options: {
+  options: {}
+}, function (err) {
+  if (err)
+    console.log(err.message.red);
+});
 
-  }
+api.pack.register({
+  plugin: require('./endpoint/accounts'),
+  options: {}
 }, function (err) {
   if (err)
     console.log(err.message.red);

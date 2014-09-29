@@ -27,5 +27,10 @@
     "lodash": "^2.4.1",
     "mongoose": "^3.8.16",
     "uuid": "^1.4.2"
+  },
+  "devDependencies": {
+    "mocha": "https://registry.npmjs.org/mocha/-/mocha-1.21.4.tgz",
+    "request": "^2.44.0",
+    "should": "^4.0.4"
   }
 }
