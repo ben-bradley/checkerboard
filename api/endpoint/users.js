@@ -7,7 +7,7 @@ exports.register = function (plugin, options, next) {
     method: 'GET',
     path: '/users',
     config: {
-      auth: 'simple',
+      auth: 'session',
       pre: [{
         method: Users.readAll,
         assign: 'users'

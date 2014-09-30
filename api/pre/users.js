@@ -3,14 +3,23 @@ var Hapi = require('hapi'),
   Bcrypt = require('bcrypt'),
   Users = require('../models/users');
 
-module.exports.validate = function (username, password, callback) {
+module.exports.validate = function (request, reply) {
+  var username = request.payload.username,
+    password = request.payload.password;
+  if (!username || !password)
+    return reply(Hapi.error.badRequest('Invalid credentials'));
+
   Users.findOne({
     username: username
   }, function (err, user) {
     if (!user)
-      return callback(null, false);
+      return reply(Hapi.error.badRequest('Invalid credentials'));
     Bcrypt.compare(password, user.password, function (err, isValid) {
-      callback(err, isValid, _.omit(user, 'password'));
+      if (err || !isValid)
+        return reply(Hapi.error.badRequest('Invalid credentials'));
+      request.auth.session.set('user', _.omit(user, 'password'));
+      request.auth.isAuthenticated = true;
+      reply(_.omit(user, 'password'));
     });
   });
 }
