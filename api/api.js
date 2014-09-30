@@ -31,6 +31,12 @@ api.route({
   }
 });
 
+api.pack.register(require('hapi-auth-basic'), function (err) {
+  api.auth.strategy('simple', 'basic', {
+    validateFunc: require('./pre/users').validate
+  });
+});
+
 api.pack.register({
   plugin: require('./endpoint/checks'),
   options: {}
@@ -41,6 +47,14 @@ api.pack.register({
 
 api.pack.register({
   plugin: require('./endpoint/accounts'),
+  options: {}
+}, function (err) {
+  if (err)
+    console.log(err.message.red);
+});
+
+api.pack.register({
+  plugin: require('./endpoint/users'),
   options: {}
 }, function (err) {
   if (err)

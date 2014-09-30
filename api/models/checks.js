@@ -19,7 +19,8 @@ var ChecksSchema = new Schema({
     required: true
   },
   tags: {
-    type: [String]
+    type: [String],
+    default: []
   },
   created: {
     type: Date
