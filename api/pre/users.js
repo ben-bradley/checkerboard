@@ -1,10 +1,26 @@
 var Hapi = require('hapi'),
   _ = require('lodash'),
+  Bcrypt = require('bcrypt'),
   Users = require('../models/users');
 
+module.exports.validate = function (username, password, callback) {
+  Users.findOne({
+    username: username
+  }, function (err, user) {
+    if (!user)
+      return callback(null, false);
+    Bcrypt.compare(password, user.password, function (err, isValid) {
+      callback(err, isValid, _.omit(user, 'password'));
+    });
+  });
+}
+
 module.exports.readAll = function (request, reply) {
+  console.log(request);
   var _id = request.session.account;
-  Users.find({}, function (err, users) {
+  Users.find({}, {
+    password: false
+  }, function (err, users) {
     if (err)
       return reply(Hapi.error.badRequest(err));
     if (!users)
@@ -15,7 +31,9 @@ module.exports.readAll = function (request, reply) {
 
 module.exports.read = function (request, reply) {
   var _id = request.params.id;
-  Users.findById(_id, function (err, user) {
+  Users.findById(_id, {
+    password: false
+  }, function (err, user) {
     if (err)
       return reply(Hapi.error.badRequest(err));
     if (!user)
@@ -29,14 +47,16 @@ module.exports.create = function (request, reply) {
   user.save(function (err) {
     if (err)
       return reply(Hapi.error.badRequest(err));
-    reply(user);
+    reply(_.omit(user, 'password'));
   });
 }
 
 module.exports.update = function (request, reply) {
   var payload = request.payload,
     _id = request.params.id;
-  Users.findById(_id, function (err, user) {
+  Users.findById(_id, {
+    password: false
+  }, function (err, user) {
     if (err)
       return reply(Hapi.error.badRequest(err));
     else if (!user)

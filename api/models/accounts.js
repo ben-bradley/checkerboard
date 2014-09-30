@@ -12,7 +12,8 @@ var AccountsSchema = new Schema({
     default: uuid.v4
   },
   checks: {
-    type: [String]
+    type: [String],
+    default: []
   },
   checkLimit: {
     type: Number,
@@ -30,7 +31,7 @@ var AccountsSchema = new Schema({
   },
   name: {
     type: String,
-    default: ''
+    required: true
   }
 }, {
   collection: 'accounts'
