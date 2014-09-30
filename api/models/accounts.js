@@ -7,18 +7,26 @@ var AccountsSchema = new Schema({
     type: String,
     default: uuid.v4
   },
+  secret: {
+    type: String,
+    default: uuid.v4
+  },
   checks: {
     type: [String]
+  },
+  checkLimit: {
+    type: Number,
+    default: 10
+  },
+  userLimit: {
+    type: Number,
+    default: 10
   },
   created: {
     type: Date
   },
   updated: {
     type: Date
-  },
-  check_limit: {
-    type: Number,
-    default: 10
   },
   name: {
     type: String,

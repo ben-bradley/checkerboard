@@ -4,6 +4,8 @@ var Hapi = require('hapi'),
 
 exports.register = function (plugin, options, next) {
 
+  // get the checks for an account
+  // request sent from UI
   plugin.route({
     method: 'GET',
     path: '/checks',
@@ -21,6 +23,8 @@ exports.register = function (plugin, options, next) {
     }
   });
 
+  // add a new check to an account
+  // request sent from UI
   plugin.route({
     method: 'POST',
     path: '/checks',
@@ -38,6 +42,8 @@ exports.register = function (plugin, options, next) {
     }
   });
 
+  // get the details of a specific check
+  // request sent from UI
   plugin.route({
     method: 'GET',
     path: '/checks/{id}',
@@ -52,6 +58,8 @@ exports.register = function (plugin, options, next) {
     }
   });
 
+  // update a specific check
+  // request sent from the check app/script, must contain the secret
   plugin.route({
     method: 'PUT',
     path: '/checks/{id}',
@@ -66,6 +74,8 @@ exports.register = function (plugin, options, next) {
     }
   });
 
+  // delete a check
+  // request sent from UI
   plugin.route({
     method: 'DELETE',
     path: '/checks/{id}',
