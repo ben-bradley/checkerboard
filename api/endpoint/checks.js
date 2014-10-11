@@ -10,10 +10,8 @@ exports.register = function (plugin, options, next) {
     method: 'GET',
     path: '/checks',
     config: {
+      auth: 'account-auth',
       pre: [{
-        method: Accounts.read,
-        assign: 'account'
-      }, {
         method: Checks.readAll,
         assign: 'checks'
       }],

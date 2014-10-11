@@ -4,6 +4,7 @@ var Hapi = require('hapi'),
   mongoose = require('mongoose'),
   colors = require('colors'),
   glob = require('glob'),
+  accountAuth = require('./auth/account'),
   config = require('./config')(ENVIRONMENT);
 
 var api = new Hapi.Server('localhost', config.port, {
@@ -13,6 +14,17 @@ var api = new Hapi.Server('localhost', config.port, {
 mongoose.connect(config.db);
 
 api.info.environment = ENVIRONMENT;
+
+api.pack.register(accountAuth, function (err) {
+  api.auth.strategy('account-auth', 'account-auth-header', {
+    validate: function (request, callback) {
+      console.log(request)
+      callback(null, true, {
+        account: 'account'
+      });
+    }
+  });
+});
 
 api.route({
   method: 'GET',

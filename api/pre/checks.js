@@ -4,14 +4,13 @@ var Hapi = require('hapi'),
 
 // readAll provides the list of checks for the active account
 module.exports.readAll = function (request, reply) {
-  var account = request.pre.account;
+  var account = request.auth.credentials;
+  console.log(account);
   Checks.find({
-    account: account
+    account_id: account._id
   }, function (err, checks) {
     if (err)
       return reply(Hapi.error.badRequest(err));
-    if (!checks || checks.length === 0)
-      return reply(Hapi.error.badRequest('no checks found for account: ' + account));
     reply(checks);
   });
 }
