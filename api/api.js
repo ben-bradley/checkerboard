@@ -3,6 +3,7 @@ var ENVIRONMENT = process.env.NODE_ENV || 'dev';
 var Hapi = require('hapi'),
   mongoose = require('mongoose'),
   colors = require('colors'),
+  glob = require('glob'),
   config = require('./config')(ENVIRONMENT);
 
 var api = new Hapi.Server('localhost', config.port, {
@@ -31,34 +32,15 @@ api.route({
   }
 });
 
-api.pack.register(require('hapi-auth-basic'), function (err) {
-  api.auth.strategy('simple', 'basic', {
-    validateFunc: require('./pre/users').validate
+glob.sync(__dirname + '/endpoint/*.js').forEach(function (file) {
+  console.log('// Loading endpoint: '.green + file.yellow);
+  api.pack.register({
+    plugin: require(file),
+    options: {}
+  }, function (err) {
+    if (err)
+      console.log(err.message.red);
   });
-});
-
-api.pack.register({
-  plugin: require('./endpoint/checks'),
-  options: {}
-}, function (err) {
-  if (err)
-    console.log(err.message.red);
-});
-
-api.pack.register({
-  plugin: require('./endpoint/accounts'),
-  options: {}
-}, function (err) {
-  if (err)
-    console.log(err.message.red);
-});
-
-api.pack.register({
-  plugin: require('./endpoint/users'),
-  options: {}
-}, function (err) {
-  if (err)
-    console.log(err.message.red);
 });
 
 api.start(function () {
