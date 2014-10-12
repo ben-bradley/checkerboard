@@ -7,7 +7,10 @@ exports.register = function (plugin, options, next) {
     method: 'GET',
     path: '/accounts',
     config: {
+      auth: 'account-auth',
       pre: [{
+        method: Accounts.isAdmin
+      }, {
         method: Accounts.readAll,
         assign: 'accounts'
       }],
@@ -21,7 +24,10 @@ exports.register = function (plugin, options, next) {
     method: 'POST',
     path: '/accounts',
     config: {
+      auth: 'account-auth',
       pre: [{
+        method: Accounts.isAdmin
+      }, {
         method: Accounts.create,
         assign: 'account'
       }],
@@ -35,7 +41,10 @@ exports.register = function (plugin, options, next) {
     method: 'GET',
     path: '/accounts/{id}',
     config: {
+      auth: 'account-auth',
       pre: [{
+        method: Accounts.isAdmin
+      }, {
         method: Accounts.read,
         assign: 'account'
       }],

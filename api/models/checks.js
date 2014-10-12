@@ -14,7 +14,7 @@ var ChecksSchema = new Schema({
     type: String,
     default: uuid.v4
   },
-  account: {
+  account_id: {
     type: String,
     required: true
   },

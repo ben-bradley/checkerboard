@@ -21,31 +21,13 @@ exports.register = function (plugin, options, next) {
     }
   });
 
-  // add a new check to an account
-  // request sent from UI
-  plugin.route({
-    method: 'POST',
-    path: '/checks',
-    config: {
-      pre: [{
-        method: Accounts.read,
-        assign: 'account'
-      }, {
-        method: Checks.create,
-        assign: 'check'
-      }],
-      handler: function (request, reply) {
-        reply(request.pre.check);
-      }
-    }
-  });
-
   // get the details of a specific check
   // request sent from UI
   plugin.route({
     method: 'GET',
     path: '/checks/{id}',
     config: {
+      auth: 'account-auth',
       pre: [{
         method: Checks.read,
         assign: 'checks'
@@ -56,12 +38,30 @@ exports.register = function (plugin, options, next) {
     }
   });
 
+  // add a new check to an account
+  // request sent from UI
+  plugin.route({
+    method: 'POST',
+    path: '/checks',
+    config: {
+      auth: 'account-auth',
+      pre: [{
+        method: Checks.create,
+        assign: 'check'
+      }],
+      handler: function (request, reply) {
+        reply(request.pre.check);
+      }
+    }
+  });
+
   // update a specific check
   // request sent from the check app/script, must contain the secret
   plugin.route({
     method: 'PUT',
     path: '/checks/{id}',
     config: {
+      auth: 'account-auth',
       pre: [{
         method: Checks.update,
         assign: 'check'
@@ -78,6 +78,7 @@ exports.register = function (plugin, options, next) {
     method: 'DELETE',
     path: '/checks/{id}',
     config: {
+      auth: 'account-auth',
       pre: [{
         method: Checks.delete,
         assign: 'check'

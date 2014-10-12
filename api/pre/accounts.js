@@ -33,6 +33,10 @@ module.exports.create = function (request, reply) {
   });
 }
 
+module.exports.isAdmin = function (request, reply) {
+  reply();
+}
+
 //module.exports.update = function (request, reply) {
 //  var payload = request.payload,
 //    _id = request.params.id;
